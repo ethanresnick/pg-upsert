@@ -85,13 +85,13 @@ export default function <T extends string>(opts: {
       ? knexPg.raw("DO NOTHING")
       : knexPg.raw(
           `DO UPDATE
-          SET ${updateKeys.map((k) => `?? = EXCLUDED.??`).join(", ")}
+          SET ${updateKeys.map((k) => `??.?? = EXCLUDED.??`).join(", ")}
           WHERE ${constraintCols
-            .map((_colName) => `?? = EXCLUDED.??`)
+            .map((_colName) => `??.?? = EXCLUDED.??`)
             .join(" AND ")}`,
           updateKeys
-            .flatMap((it) => [it, it])
-            .concat(constraintCols.flatMap((it) => [it, it]))
+            .flatMap((it) => [table, it, it])
+            .concat(constraintCols.flatMap((it) => [table, it, it]))
         );
 
   const upsertQuery = knexPg.raw(`? ON CONFLICT ? ? RETURNING *`, [

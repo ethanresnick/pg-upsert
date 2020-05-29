@@ -30,8 +30,8 @@ test("should not require a schema", () => {
     `INSERT INTO "x" ("id","other")
       VALUES ($1,$2)
       ON CONFLICT ("id") DO UPDATE
-        SET "other" = EXCLUDED."other"
-        WHERE "id" = EXCLUDED."id"
+        SET "x"."other" = EXCLUDED."other"
+        WHERE "x"."id" = EXCLUDED."id"
       RETURNING *`,
     [1, 2]
   );
@@ -48,8 +48,8 @@ test("should work with a schema", () => {
     `INSERT INTO "y"."x" ("id","other")
       VALUES ($1,$2)
       ON CONFLICT ("id") DO UPDATE
-        SET "other" = EXCLUDED."other"
-        WHERE "id" = EXCLUDED."id"
+        SET "x"."other" = EXCLUDED."other"
+        WHERE "x"."id" = EXCLUDED."id"
       RETURNING *`,
     [1, 2]
   );
@@ -69,8 +69,8 @@ test("should support multiple objects", () => {
     `INSERT INTO "y"."x" ("id","other")
       VALUES ($1,$2),($3,$4)
       ON CONFLICT ("id") DO UPDATE
-        SET "other" = EXCLUDED."other"
-        WHERE "id" = EXCLUDED."id"
+        SET "x"."other" = EXCLUDED."other"
+        WHERE "x"."id" = EXCLUDED."id"
       RETURNING *`,
     [1, 4, 2, "hello"]
   );
@@ -104,8 +104,8 @@ test("should support using default on some undefined/missing values", () => {
     `INSERT INTO "y"."x" ("id","other")
       VALUES ($1,DEFAULT),($2,$3)
       ON CONFLICT ("id") DO UPDATE
-        SET "other" = EXCLUDED."other"
-        WHERE "id" = EXCLUDED."id"
+        SET "x"."other" = EXCLUDED."other"
+        WHERE "x"."id" = EXCLUDED."id"
       RETURNING *`,
     [1, 2, "hello"]
   );
