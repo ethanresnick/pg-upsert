@@ -1,16 +1,19 @@
 {
   "name": "@sqlutils/pg-upsert",
-  "version": "0.0.4",
+  "version": "0.0.3",
   "description": "A (bulk) upsert function for pg.",
   "scripts": {
     "build": "tsc",
-    "test": "jest"
+    "test": "jest",
+    "prepublishOnly": "npm run build -- --incremental false"
   },
   "dependencies": {
     "@types/lodash": "^4.14.153",
     "knex": "^0.21.1",
     "lodash": "^4.17.11"
   },
+  "main": "build/index.js",
+  "typings": "build/index.d.ts",
   "devDependencies": {
     "@types/jest": "^25.2.3",
     "jest": "^26.0.1",
@@ -23,8 +26,7 @@
     "node": ">=12"
   },
   "files": [
-    "*.md",
-    "index.ts"
+    "build"
   ],
   "keywords": [
     "pg",
