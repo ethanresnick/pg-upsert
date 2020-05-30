@@ -139,6 +139,20 @@ test("should support throwing upon finding some missing values", () => {
   });
 });
 
+test("should support index predicates (don't use this if you don't need it!!)", () => {
+  assertResMatches(
+    sut({
+      table: "x",
+      constraintCols: ["id"],
+      indexPredicate: "is_enabled = true",
+      missingKeysBehavior: "throw",
+      data: [{ id: 2 }],
+    }),
+    `INSERT INTO "x" ("id") VALUES ($1) ON CONFLICT ("id") WHERE is_enabled = true DO NOTHING RETURNING *`,
+    [2]
+  );
+});
+
 function assertResMatches(
   res: ReturnType<typeof sut>,
   sql: string,

@@ -28,6 +28,7 @@ export default function <T extends string>(opts: {
   table: string;
   schema?: string;
   constraintCols: readonly T[];
+  indexPredicate?: string;
   data: ({ [K in T]: any } & { [k: string]: any })[];
   onUpdateIgnore?: readonly string[];
   missingKeysBehavior?: "default" | "throw";
@@ -85,7 +86,7 @@ export default function <T extends string>(opts: {
       ? knexPg.raw("DO NOTHING")
       : knexPg.raw(
           `DO UPDATE
-          SET ${updateKeys.map((k) => `?? = EXCLUDED.??`).join(", ")}
+          SET ${updateKeys.map((_k) => `?? = EXCLUDED.??`).join(", ")}
           WHERE ${constraintCols
             .map((_colName) => `??.?? = EXCLUDED.??`)
             .join(" AND ")}`,
@@ -94,9 +95,18 @@ export default function <T extends string>(opts: {
             .concat(constraintCols.flatMap((it) => [table, it, it]))
         );
 
+  // The fact that an index predicate is ever needed is really leaking
+  // PG limitations/implementation details into our API, but it's absolutely
+  // needed for dealing with, e.g., partial unique indexes.
+  const conflictTarget = opts.indexPredicate
+    ? knexPg.raw(`? WHERE ${opts.indexPredicate}`, [
+        columnsList(constraintCols, knexPg),
+      ])
+    : columnsList(constraintCols, knexPg);
+
   const upsertQuery = knexPg.raw(`? ON CONFLICT ? ? RETURNING *`, [
     insertQuery,
-    columnsList(constraintCols, knexPg),
+    conflictTarget,
     onConflictAction,
   ]);
 
