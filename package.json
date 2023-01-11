@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@types/lodash": "^4.14.153",
-    "knex": "^0.21.1",
+    "knex": "^2.4.0",
     "lodash": "^4.17.11"
   },
   "main": "build/index.js",
